@@ -20,12 +20,15 @@ pub(crate) fn glow_print(s: impl std::fmt::Display) {
     eprintln!("egui_glow: {}", s);
 }
 
-pub(crate) fn glow_print_error(s: impl std::fmt::Display) {
-    #[cfg(target_arch = "wasm32")]
-    web_sys::console::error_1(&format!("egui_glow: {}", s).into());
-
-    #[cfg(not(target_arch = "wasm32"))]
-    eprintln!("egui_glow ERROR: {}", s);
+#[cfg(target_arch = "wasm32")]
+pub(crate) fn glow_debug_print(s: impl std::fmt::Display) {
+    web_sys::console::log_1(&format!("egui_glow: {}", s).into());
+}
+#[cfg(not(target_arch = "wasm32"))]
+#[allow(unused_variables)]
+pub(crate) fn glow_debug_print(s: impl std::fmt::Display) {
+    #[cfg(feature = "debug_print")]
+    eprintln!("egui_glow: {}", s);
 }
 
 pub(crate) unsafe fn compile_shader(
